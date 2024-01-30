@@ -1,25 +1,22 @@
-import { CREATE, DELETE, EDIT } from "./taskTypes";
+import { CREATE, DELETE, EDIT, FETCH, TASKS_RECEIVED } from "./taskTypes";
+import {fromJS} from 'immutable';
 
-const initialState = {tasks: []};
+const initialState = fromJS({tasks: []});
 
 const taskReducer = (state = initialState, action) => {
     switch(action.type){
+        case FETCH: 
+            return state
+        case TASKS_RECEIVED:
+            return state.set(
+                'tasks', [action.json]
+            )
         case CREATE:
-            console.log(state);
-            return {
-                tasks: [...state.tasks, action.payload.data]
-            }
+            return state
         case EDIT:
-            console.log('hello');
-            let newState = state;
-            newState.tasks[action.payload.id] = action.payload.data;
-            return {
-                tasks: newState.tasks
-            }
+            return state
         case DELETE:
-            return {
-                tasks: state.tasks.filter((value, index) => index!=action.payload.id)
-            }
+            return state
         default:
             return state;
     }
