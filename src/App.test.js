@@ -31,7 +31,6 @@ describe("tests for homepage", () => {
 
     const firstRow = screen.getByRole('cell', {  name: /task1 desc/i});
     expect(firstRow).toBeInTheDocument();
-<<<<<<< HEAD
   });
 
   test("checking if buttons are present in create task ui", () => {
@@ -41,9 +40,6 @@ describe("tests for homepage", () => {
     fireEvent.click(addButton);
     expect(screen.getByText(/add a new task/i)).toBeInTheDocument();
   });
-=======
-  })
->>>>>>> 963240e (added new tests)
 
   /*
   TDD 
