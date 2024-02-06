@@ -3,10 +3,13 @@ import './EditTask.css';
 import {useNavigate} from 'react-router-dom'
 import { useParams } from 'react-router-dom';
 import {editTask} from '../redux/taskActions';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
+import { taskSelector } from '../selectors/taskSelector';
+// import { createSelector } from 'reselect';
 
-const EditTask = () => {
-    const {tasks} = useSelector((state) => state);
+const EditTask = (props) => {
+    const tasks = props.tasks[0];
     const {id} = useParams();
 
     const dispatch = useDispatch();
@@ -14,15 +17,21 @@ const EditTask = () => {
 
     const handleClick = (event) => {
         event.preventDefault();
-        const object = {task: taskName, description: taskDescription, status: status, deadline: deadline};
+        const object = {task: taskName, description: taskDescription, status: status, deadline: deadline, id: id};
         dispatch(editTask(id, object));
         navigate('/');
     }
 
-    const [taskName, setTaskName] = useState(tasks[id].task);
-    const [taskDescription, setTaskDescription] = useState(tasks[id].description);
-    const [status, setStatus] = useState(tasks[id].status);
-    const [deadline, setDeadline] = useState(tasks[id].deadline);
+    function findTask(t, id){
+        return t.id === id
+    }
+
+    let taskFound = tasks.find(t => findTask(t, id));
+
+    const [taskName, setTaskName] = useState(taskFound.task);
+    const [taskDescription, setTaskDescription] = useState(taskFound.description);
+    const [status, setStatus] = useState(taskFound.status);
+    const [deadline, setDeadline] = useState(taskFound.deadline);
 
     return (
         <div className='create-task-container'>
@@ -35,7 +44,7 @@ const EditTask = () => {
                         <option value="Pending">Pending</option>
                         <option value="Completed">Completed</option>
                     </select>
-                    <input type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} />
+                    <input type="text" value={deadline} onChange={(e) => setDeadline(e.target.value)} />
                     <button onClick={handleClick}>Edit</button>
                 </form> 
             </div>
@@ -43,4 +52,18 @@ const EditTask = () => {
     );
 }
 
-export default EditTask;
+// export default EditTask;
+
+const mapStateToProps = state => {
+    return {
+        tasks: taskSelector(state)
+    };
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        editTask: (id, object)=>dispatch(editTask(id, object))
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditTask);

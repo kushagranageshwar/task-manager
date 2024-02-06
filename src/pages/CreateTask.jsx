@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
+import moment from 'moment';
+import { Link } from 'react-router-dom';
 import './CreateTask.css';
 import {useNavigate} from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { createTask } from '../redux/taskActions';
+import { nanoid } from '@reduxjs/toolkit';
+import { connect } from 'react-redux';
+import { taskSelector } from '../selectors/taskSelector';
 
 const CreateTask = () => {
     const dispatch = useDispatch();
@@ -10,8 +15,8 @@ const CreateTask = () => {
 
     const handleClick = (event) => {
         event.preventDefault();
-        const object = {task: taskName, description: taskDescription, status: status, deadline: deadline};
-
+        const object = {task: taskName, description: taskDescription, status: status, deadline: deadline, id: String(nanoid())};
+        // console.log(object);
         dispatch(createTask(object));
         navigate('/');
     }
@@ -19,7 +24,7 @@ const CreateTask = () => {
     const [taskName, setTaskName] = useState("NA");
     const [taskDescription, setTaskDescription] = useState("NA");
     const [status, setStatus] = useState("Pending");
-    const [deadline, setDeadline] = useState();
+    const [deadline, setDeadline] = useState("today");
 
     return (
         <div className='create-task-container'>
@@ -32,7 +37,7 @@ const CreateTask = () => {
                         <option value="Pending">Pending</option>
                         <option value="Completed">Completed</option>
                     </select>
-                    <input type="date" placeholder={"Date"} onChange={(e) => setDeadline(e.target.value)} />
+                    <input type="text" placeholder={"Date"} onChange={(e) => setDeadline(e.target.value)} />
                     <button onClick={handleClick}>Add</button>
                 </form> 
             </div>
@@ -40,4 +45,17 @@ const CreateTask = () => {
     );
 }
 
-export default CreateTask;
+// export default CreateTask;
+const mapStateToProps = state => {
+    return {
+        tasks: taskSelector(state)
+    };
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        createTask: (obj)=>dispatch(createTask(obj))
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateTask);

@@ -1,18 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import "./TaskView.css";
 import AddButton from '../Buttons/AddButton';
 import {useNavigate} from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { deleteTask } from '../../redux/taskActions';
+import { connect } from 'react-redux';
+import { deleteTask, fetchTasks } from '../../redux/taskActions';
+import { taskSelector } from '../../selectors/taskSelector';
 
-const TaskView = () => {
-    const {tasks} = useSelector((state) => state);
-    
-    const dispatch = useDispatch();
+const TaskView = (props) => {
+    const tasks = props?.tasks[0];
     const navigate = useNavigate();
 
+    // console.log("*****", props.tasks);
+
+    useEffect(()=>{
+        props.fetchTasks();
+    }, []);
+
     const handleDelete = (index) => {
-        dispatch(deleteTask(index));
+        props.deleteTask(index);
+        navigate('/');
     };
 
     const handleClick = (index) => {
@@ -23,10 +29,10 @@ const TaskView = () => {
         return (
             <tr className='task-items' key={index}>
                 <td>{element?.task}</td>
-                <td onClick={() => handleClick(index)}>{element?.description}</td>
+                <td onClick={() => handleClick(element?.id)}>{element?.description}</td>
                 <td>{element?.status}</td>
                 <td>{element?.deadline}</td>
-                <td><button className='delete-btn' onClick={() => handleDelete(index)}>x</button></td>
+                <td><button className='delete-btn' onClick={() => handleDelete(element?.id)}>x</button></td>
             </tr>
         )
     });
@@ -45,7 +51,7 @@ const TaskView = () => {
                         </tr>
                     </thead>
                     <tbody className='taskview-body'>
-                    {alltasks?.length ? alltasks : <p>No tasks to show</p>}
+                    {alltasks?.length ? alltasks : "No tasks to show"}
                     </tbody>
                 </table>
             </div>
@@ -53,4 +59,18 @@ const TaskView = () => {
     );
 }
 
-export default TaskView;
+const mapStateToProps = state => {
+    // console.log(state);
+    return {
+        tasks: taskSelector(state)
+    };
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchTasks: ()=>dispatch(fetchTasks()),
+        deleteTask: (index)=>dispatch(deleteTask(index))
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TaskView);

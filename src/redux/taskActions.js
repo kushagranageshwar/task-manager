@@ -1,4 +1,4 @@
-import {CREATE, EDIT, DELETE} from './taskTypes.js';
+import {CREATE, EDIT, DELETE, FETCH} from './taskTypes.js';
 
 function createTask(data){
     return {type: CREATE, payload: {data: data}}
@@ -12,4 +12,8 @@ function deleteTask(id){
     return {type: DELETE, payload: {id: id}}
 }
 
-export {createTask, editTask, deleteTask};
+function fetchTasks(){
+    return {type: FETCH}
+}
+
+export {createTask, editTask, deleteTask, fetchTasks};
