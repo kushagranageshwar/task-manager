@@ -41,6 +41,14 @@ describe("tests for homepage", () => {
     expect(screen.getByText(/add a new task/i)).toBeInTheDocument();
   });
 
+  test("checking if buttons are present in create task ui hotfix 1", () => {
+    render(<App/>);
+
+    const addButton = screen.getByRole("button", { name: /\+ add task/i });
+    fireEvent.click(addButton);
+    expect(screen.getByText(/add a new task/i)).toBeInTheDocument();
+  });
+
   /*
   TDD 
 
