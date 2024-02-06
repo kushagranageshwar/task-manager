@@ -31,7 +31,15 @@ describe("tests for homepage", () => {
 
     const firstRow = screen.getByRole('cell', {  name: /task1 desc/i});
     expect(firstRow).toBeInTheDocument();
-  })
+  });
+
+  test("checking if buttons are present in create task ui", () => {
+    render(<App/>);
+
+    const addButton = screen.getByRole("button", { name: /\+ add task/i });
+    fireEvent.click(addButton);
+    expect(screen.getByText(/add a new task/i)).toBeInTheDocument();
+  });
 
   /*
   TDD 
