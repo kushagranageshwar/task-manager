@@ -1,0 +1,44 @@
+/* .create-task-container{
+    width: 700px;
+    height: 600px;
+    box-sizing: border-box;
+} */
+.create-task-container{
+    margin: 10px;
+}
+
+/* .create-task-header{
+    margin: 10px;
+    padding: 10px;
+} */
+
+form{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.create-task-form{
+    padding: 10px;
+}
+
+.create-task-form input, select{
+    margin: 10px 0px;
+}
+
+.create-task-form button{
+    /* margin: 10px; */
+    border: none;
+    padding: 10px;
+}
+
+.create-task-form button:hover{
+    background-color: lightgreen;
+    color: white;
+    border: none;
+}
+
+input, select{
+    padding: 10px;
+}
