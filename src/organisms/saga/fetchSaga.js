@@ -1,4 +1,4 @@
-import { takeLatest, put, get } from 'redux-saga/effects';
+import { takeLatest, put } from 'redux-saga/effects';
 import {FETCH, TASKS_RECEIVED} from '../redux/taskTypes';
 
 function* fetchData() {

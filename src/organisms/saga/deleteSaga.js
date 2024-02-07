@@ -4,7 +4,7 @@ import axios from 'axios';
 
 function* deleteData(action) {
     try{
-        const response = yield call(axios.delete, [`http://localhost:8000/tasks/${action.payload.id}`]);
+        yield call(axios.delete, [`http://localhost:8000/tasks/${action.payload.id}`]);
         yield put({type: FETCH});
     }
     catch(err){

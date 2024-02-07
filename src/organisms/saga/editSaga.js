@@ -1,10 +1,10 @@
-import { takeLatest, put, call } from 'redux-saga/effects';
+import { takeLatest, call } from 'redux-saga/effects';
 import {EDIT} from '../redux/taskTypes';
 import axios from 'axios';
 
 function* editData(action) {
     try{
-        const response = yield call(axios.put, [`http://localhost:8000/tasks/${action.payload.id}`], action.payload.data);
+        yield call(axios.put, [`http://localhost:8000/tasks/${action.payload.id}`], action.payload.data);
     }
     catch(err){
         console.log(err);

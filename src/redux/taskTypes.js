@@ -1,7 +1,0 @@
-const EDIT = 'EDIT';
-const CREATE = 'CREATE';
-const DELETE = 'DELETE';
-const FETCH = 'FETCH';
-const TASKS_RECEIVED = 'TASKS_RECEIVED';
-
-export {EDIT, CREATE, DELETE, FETCH, TASKS_RECEIVED};

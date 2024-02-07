@@ -4,7 +4,7 @@ import AddButton from '../../atoms/Buttons/AddButton';
 import {useNavigate} from 'react-router-dom';
 import { connect } from 'react-redux';
 import { deleteTask, fetchTasks } from '../../organisms/redux/taskActions';
-import { taskSelector } from '../../organisms/selectors/taskSelector';
+import {taskSelector} from '../../organisms/selectors/taskSelector'
 
 const TaskView = (props) => {
     const tasks = props?.tasks[0];
