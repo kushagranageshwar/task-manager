@@ -4,9 +4,14 @@ import store from "../../../organisms/redux/store";
 import { Provider } from "react-redux";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import CreateTask from "../../CreateTask/CreateTask";
-import { renderWithProvider, render, screen } from "../../../utils/testUtils";
+import {
+  renderWithProvider,
+  render,
+  screen,
+  waitFor,
+} from "../../../../utils/testUtils";
 import userEvent from "@testing-library/user-event";
-import { server } from "../../../mocks/node";
+import { server } from "../../../../mocks/node";
 import axios from "axios";
 
 beforeAll(() => server.listen());
@@ -53,31 +58,36 @@ describe("tests for homepage", () => {
 
   test("checking if mockdata renders in ui", async () => {
     render(
-        <Provider store={store}>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<TaskView />} />
-              <Route path="/create-task" element={<CreateTask />} />
-            </Routes>
-          </BrowserRouter>
-        </Provider>
-      );
-    screen.debug();
-    const row = await screen.findAllByRole("row");
-    expect(row).toBeInTheDocument();
+      <Provider store={store}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<TaskView />} />
+            <Route path="/create-task" element={<CreateTask />} />
+          </Routes>
+        </BrowserRouter>
+      </Provider>
+    );
+    await waitFor(
+      () => {
+        const row = screen.queryAllByRole("row");
+        expect(row[0]).toBeInTheDocument();
+      },
+      {
+        interval: 100,
+      }
+    );
   });
 
-  //   test("checking if delete button calls mock api", async () => {
-  //     renderWithProvider({ Component: TaskView });
-  //     const deleteSpy = jest.spyOn(axios, "delete");
-
-  //     const row = screen.getByRole("row", {
-  //       name: /task2 task2 desc completed 31\/01\/2024 x/i,
-  //     });
-  //     within(row).getByText(/x/i);
-
-  //     const deleteBtn = await screen.findByRole("button", { name: /x/i });
-  //     userEvent.click(deleteBtn);
-  //     expect(deleteSpy).toHaveBeenCalledTimes(1);
-  //   });
+    test("checking if delete button calls mock api", async () => {
+      renderWithProvider({ Component: TaskView });
+      const deleteSpy = jest.spyOn(axios, "delete");
+      let deleteBtn = []
+      await waitFor(()=>{
+        deleteBtn = screen.queryAllByRole("button", { name: /x/i });
+        userEvent.click(deleteBtn[0]);
+        expect(deleteSpy).toHaveBeenCalledTimes(1);
+      }, {
+        interval: 100,
+      });
+    });
 });

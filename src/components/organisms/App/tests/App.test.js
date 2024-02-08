@@ -1,10 +1,10 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import App from "../App/App";
-import Navbar from "../../components/Navbar/Navbar";
+import App from "../App";
+import Navbar from "../../../atoms/Navbar/Navbar";
 import { Provider } from "react-redux";
-import store from "../../organisms/redux/store";
+import store from "../../redux/store";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import TaskView from "../../molecules/TaskView/TaskView";
+import TaskView from "../../../molecules/TaskView/TaskView";
 
 describe("tests for homepage", () => {
   beforeEach(() => {
@@ -31,11 +31,11 @@ describe("tests for homepage", () => {
     expect(screen.getByText(/add a new task/i)).toBeInTheDocument();
   });
 
-  test("checking navbar", ()=>{
+  test("checking navbar", () => {
     render(
-        <Provider store={store}>
+      <Provider store={store}>
         <BrowserRouter>
-            <Navbar/>
+          <Navbar />
           <Routes>
             <Route path="/" element={<TaskView />} />
           </Routes>
@@ -44,15 +44,14 @@ describe("tests for homepage", () => {
     );
 
     expect(screen.getByText(/task manager/i)).toBeInTheDocument();
-  })
+  });
 
-//   test("checking if rows are present in ui for pre-fetched data", () => {
-//     render(<App />);
+  //   test("checking if rows are present in ui for pre-fetched data", () => {
+  //     render(<App />);
 
-//     const firstRow = screen.getByRole("cell", { name: /task1 desc/i });
-//     expect(firstRow).toBeInTheDocument();
-//   });
-
+  //     const firstRow = screen.getByRole("cell", { name: /task1 desc/i });
+  //     expect(firstRow).toBeInTheDocument();
+  //   });
 });
 // //   test("checking if buttons are present in create task ui", () => {
 // //     render(<App />);
@@ -71,7 +70,7 @@ describe("tests for homepage", () => {
 // //   });
 
 //   /*
-//   TDD 
+//   TDD
 
 //   Home page should render all components - buttons, table, navbar
 //   Clicking on row leads to edit task page

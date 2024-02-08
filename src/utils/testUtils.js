@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import store from "../organisms/redux/store";
+import store from "../components/organisms/redux/store";
 import { Provider } from "react-redux";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 

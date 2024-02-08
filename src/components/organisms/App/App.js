@@ -1,11 +1,11 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
-import Navbar from '../../atoms/Navbar/Navbar';
+import Navbar from "../../atoms/Navbar/Navbar";
 import TaskView from "../../molecules/TaskView/TaskView";
 import CreateTask from "../../molecules/CreateTask/CreateTask";
 import EditTask from "../../molecules/EditTask/EditTask";
-import store from "../../organisms/redux/store";
+import store from "../redux/store";
 import { Provider } from "react-redux";
 
 function App() {
