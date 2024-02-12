@@ -1,4 +1,3 @@
-// import App from "../../../pages/App/App";
 import TaskView from "../TaskView";
 import store from "../../../organisms/redux/store";
 import { Provider } from "react-redux";
@@ -79,8 +78,8 @@ describe("tests for homepage", () => {
   });
 
     test("checking if delete button calls mock api", async () => {
-      renderWithProvider({ Component: TaskView });
       const deleteSpy = jest.spyOn(axios, "delete");
+      renderWithProvider({ Component: TaskView });
       let deleteBtn = []
       await waitFor(()=>{
         deleteBtn = screen.queryAllByRole("button", { name: /x/i });

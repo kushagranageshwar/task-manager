@@ -10,7 +10,7 @@ export const mockdata = [
     id: "xqPgaI-YuONLtG1o3bF5J",
     task: "task2",
     description: "task2 desc",
-    status: "Completed",
+    status: "Pending",
     deadline: "31/01/2024",
   },
 ];

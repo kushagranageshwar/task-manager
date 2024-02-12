@@ -1,73 +1,84 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import App from "../App";
-import Navbar from "../../../atoms/Navbar/Navbar";
-import { Provider } from "react-redux";
-import store from "../../redux/store";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import TaskView from "../../../molecules/TaskView/TaskView";
+import { server } from "../../../../mocks/node";
+import axios from "axios";
 
-describe("tests for homepage", () => {
-  beforeEach(() => {
-    window.history.pushState({}, "", "/");
-  });
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
 
-  test("checking if all components render in ui", () => {
+describe("ITs for app", () => {
+  test("testing create task", async () => {
+    const getSpy = jest.spyOn(axios, "get");
+    const postSpy = jest.spyOn(axios, "post");
+
     render(<App />);
-    const navbar = screen.getByRole("navigation");
-    const addButton = screen.getByRole("button", { name: /\+ add task/i });
-    const tableHeader = screen.getByRole("columnheader", { name: /task/i });
-    const homeLink = screen.getByText(/task manager/i);
-
-    expect(navbar).toBeInTheDocument();
-    expect(addButton).toBeInTheDocument();
-    expect(tableHeader).toBeInTheDocument();
-    expect(homeLink).toBeInTheDocument();
-  });
-
-  test("checking if add new task link works", () => {
-    render(<App />);
-    const addButton = screen.getByRole("button", { name: /\+ add task/i });
-    fireEvent.click(addButton);
-    expect(screen.getByText(/add a new task/i)).toBeInTheDocument();
-  });
-
-  test("checking navbar", () => {
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<TaskView />} />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
+    await waitFor(
+      () => {
+        expect(getSpy).toHaveBeenCalled();
+      },
+      {
+        interval: 100,
+      }
     );
 
-    expect(screen.getByText(/task manager/i)).toBeInTheDocument();
+    const addButton = screen.getByRole("button", { name: /\+ add task/i });
+
+    fireEvent.click(addButton);
+
+    await waitFor(
+      () => {
+        expect(screen.getByText(/add a new task/i)).toBeInTheDocument();
+      },
+      {
+        interval: 100,
+      }
+    );
+
+    const createBtn = screen.getByRole("button", { name: /add/i });
+    expect(createBtn).toBeInTheDocument();
+
+    fireEvent.click(createBtn);
+
+    await new Promise((res, req) =>
+      setTimeout(() => {
+        res(true);
+      }, 2000)
+    );
+    
+    let rows = [];
+    await waitFor(() => {
+      expect(postSpy).toHaveBeenCalled();
+    });
+    rows = screen.queryAllByRole("row");
+    expect(rows[3]).toBeInTheDocument();
   });
 
-  //   test("checking if rows are present in ui for pre-fetched data", () => {
-  //     render(<App />);
+  test("testing edit task", async ()=>{
+    const putSpy = jest.spyOn(axios, "put");
 
-  //     const firstRow = screen.getByRole("cell", { name: /task1 desc/i });
-  //     expect(firstRow).toBeInTheDocument();
-  //   });
+    render(<App/>);
+
+    await waitFor(()=>{
+      expect(screen.getByText(/task1 desc/i)).toBeInTheDocument();
+    });
+
+    const taskDesc = screen.getByText(/task1 desc/i);
+    fireEvent.click(taskDesc);
+
+    await waitFor(()=>expect(screen.getByRole('button', {  name: /edit/i})).toBeInTheDocument());
+    const editBtn = screen.getByRole('button', {  name: /edit/i});
+
+    const statusInput = screen.getByRole('combobox');
+    fireEvent.change(statusInput, {
+      target: {value: "Completed"}
+    });
+
+    fireEvent.click(editBtn);
+
+    await waitFor(()=>expect(putSpy).toHaveBeenCalled());
+  });
 });
-// //   test("checking if buttons are present in create task ui", () => {
-// //     render(<App />);
-
-// //     const addButton = screen.getByRole("button", { name: /\+ add task/i });
-// //     fireEvent.click(addButton);
-// //     expect(screen.getByText(/add a new task/i)).toBeInTheDocument();
-// //   });
-
-// //   test("checking if buttons are present in create task ui hotfix 1", () => {
-// //     render(<App />);
-
-// //     const addButton = screen.getByRole("button", { name: /\+ add task/i });
-// //     fireEvent.click(addButton);
-// //     expect(screen.getByText(/add a new task/i)).toBeInTheDocument();
-// //   });
 
 //   /*
 //   TDD
@@ -83,28 +94,3 @@ describe("tests for homepage", () => {
 //   Edit task components render - input fields with same values, edit button, navbar
 //   Clicking on edit button opens home page and reflects same changes in homepage ui.
 //   */
-
-//   // test("checking if filling form in ui gets submitted", async () => {
-//   //   render(<App />);
-//   // const mockHandleSubmit = jest.fn();
-
-//   // const addButton = screen.getByRole("button", { name: /\+ add task/i });
-//   // fireEvent.click(addButton);
-
-//   // const createBtn = screen.getByRole("button", { name: /add/i });
-//   // const taskNameInput = screen.getByPlaceholderText(/Task Title/i);
-//   // const descriptionInput = screen.getByPlaceholderText(/Task Description/i);
-//   // const statusInput = screen.getByPlaceholderText(/Pending/i);
-//   // const dateInput = screen.getByPlaceholderText(/Date/i);
-//   //   expect(descriptionInput).toBeInTheDocument();
-
-//   //   fireEvent.change(taskNameInput, {
-//   //     target: { value: "new task" },
-//   //   });
-//   //   fireEvent.change(descriptionInput, {
-//   //     target: { value: "task desc" },
-//   //   });
-//   //   fireEvent.click(createBtn);
-//   //   await expect(mockFn).toHaveBeenCalled();
-//   // });
-// // });
